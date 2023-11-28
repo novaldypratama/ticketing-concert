@@ -85,6 +85,7 @@ contract TokenMaster is ERC721 {
         return occasions[_id];
     }
 
+    
     function getSeatsTaken(uint256 _id) public view returns (uint256[] memory) {
         return seatsTaken[_id];
     }
@@ -93,4 +94,28 @@ contract TokenMaster is ERC721 {
         (bool success, ) = owner.call{value: address(this).balance}("");
         require(success);
     }
+
+      function getPurchasedTickets(address _userAddress) public view returns (Occasion[] memory) {
+        uint256 purchasedTicketCount = 0;
+
+        for (uint256 i = 1; i <= totalOccasions; i++) {
+        if (hasBought[i][_userAddress]) {
+            purchasedTicketCount++;
+        }
+        }
+
+        Occasion[] memory purchasedTickets = new Occasion[](purchasedTicketCount);
+        uint256 currentIndex = 0;
+
+        for (uint256 i = 1; i <= totalOccasions; i++) {
+        if (hasBought[i][_userAddress]) {
+            purchasedTickets[currentIndex] = occasions[i];
+            currentIndex++;
+        }
+        }
+
+        return purchasedTickets;
+  }
+
+
 }

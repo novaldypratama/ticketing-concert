@@ -130,4 +130,41 @@ describe("TokenMaster", () => {
       expect(balance).to.equal(0)
     })
   })
+
+  describe('TokenMaster', function() {
+  it('should return a list of purchased tickets for a user', async function() {
+    const TokenMaster = await ethers.getContractFactory('TokenMaster');
+    const tokenMaster = await TokenMaster.deploy('TokenMaster', 'TKM');
+    await tokenMaster.deployed();
+
+    const accounts = await ethers.getSigners();
+    const owner = accounts[0];
+    const user1 = accounts[1];
+    const user2 = accounts[2];
+
+    // Create an occasion and sell two tickets
+    await tokenMaster.list('Occasion 1', 100, 2, '2023-12-01', '20:00:00', 'Venue 1');
+    await tokenMaster.mint(1, 1, { value: 100 });
+    await tokenMaster.mint(1, 2, { value: 100 });
+
+    // Create another occasion and sell one ticket
+    await tokenMaster.list('Occasion 2', 200, 3, '2023-12-15', '21:00:00', 'Venue 2');
+    await tokenMaster.mint(2, 1, { value: 200 });
+
+    // Get purchased tickets for user1
+    const purchasedTicketsForUser1 = await tokenMaster.getPurchasedTickets(user1.address);
+    expect(purchasedTicketsForUser1.length).to.equal(2);
+    expect(purchasedTicketsForUser1[0].name).to.equal('Occasion 1');
+    expect(purchasedTicketsForUser1[0].cost).to.equal(100);
+    expect(purchasedTicketsForUser1[1].name).to.equal('Occasion 1');
+    expect(purchasedTicketsForUser1[1].cost).to.equal(100);
+
+    // Get purchased tickets for user2
+    const purchasedTicketsForUser2 = await tokenMaster.getPurchasedTickets(user2.address);
+    expect(purchasedTicketsForUser2.length).to.equal(1);
+    expect(purchasedTicketsForUser2[0].name).to.equal('Occasion 2');
+    expect(purchasedTicketsForUser2[0].cost).to.equal(200);
+  });
+});
+
 })
