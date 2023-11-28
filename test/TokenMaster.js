@@ -1,5 +1,5 @@
 const { expect } = require("chai")
-//const { ethers } = require("ethers")
+const { ethers } = require("hardhat")
 
 const NAME = "TokenMaster"
 const SYMBOL = "TM"
@@ -130,4 +130,41 @@ describe("TokenMaster", () => {
       expect(balance).to.equal(0)
     })
   })
+
+  describe('TokenMaster', function() {
+    it('should return a list of purchased tickets for a user', async function() {
+      const TokenMaster = await ethers.getContractFactory('TokenMaster');
+      const tokenMaster = await TokenMaster.deploy('TokenMaster', 'TKM');
+      await tokenMaster.deployed();
+
+      const accounts = await ethers.getSigners();
+      const owner = accounts[0];
+      const user1 = accounts[1];
+      const user2 = accounts[2];
+
+      // Create an occasion and sell two tickets to user1
+      await tokenMaster.connect(owner).list('Occasion 1', 100, 2, '2023-12-01', '20:00:00', 'Venue 1');
+      await tokenMaster.connect(user1).mint(1, 1, { value: 100 }).then(tx => tx.wait());
+      await tokenMaster.connect(user1).mint(1, 2, { value: 100 }).then(tx => tx.wait());
+
+      // Create another occasion and sell one ticket to user2
+      await tokenMaster.connect(owner).list('Occasion 2', 200, 3, '2023-12-15', '21:00:00', 'Venue 2');
+      await tokenMaster.connect(user2).mint(2, 1, { value: 200 }).then(tx => tx.wait());
+
+      // Get purchased tickets for user1
+      const purchasedTicketsForUser1 = await tokenMaster.getPurchasedTickets(user1.address);
+      expect(purchasedTicketsForUser1.length).to.equal(1);
+
+      // Get purchased tickets for user2
+      const purchasedTicketsForUser2 = await tokenMaster.getPurchasedTickets(user2.address);
+      expect(purchasedTicketsForUser2.length).to.equal(1);
+
+    //console.log("Purchased Tickets for User1:", purchasedTicketsForUser1);
+    //console.log("hasBought for Occasion 1, User1:", hasBought[1][user1.address]);
+    console.log("Occasion 1 after minting:", await tokenMaster.getOccasion(1), '\n');
+    console.log("Occasion 2 after minting:", await tokenMaster.getOccasion(2));
+    //console.log("Seats taken for Occasion 1:", await tokenMaster.getSeatsTaken(1));
+    });
+  });
+
 })
