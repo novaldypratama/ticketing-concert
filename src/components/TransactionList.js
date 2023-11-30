@@ -1,16 +1,17 @@
-const TransactionList = ({ transactions }) => {
+// TransactionList.js
+const TransactionList = ({ buyerTransactions }) => {
   return (
     <ul>
-      {transactions.map((transaction) => (
-        <li key={transaction.id}>
+      {buyerTransactions.map((transaction, index) => (
+        <li key={index}>
           <p>
-            **Occasion:** {transaction.occasionId} 
+            <strong>Occasion:</strong> {transaction.occasionId} 
           </p>
           <p>
-            **Seat:** {transaction.seat}
+            <strong>Seat:</strong> {transaction.seat}
           </p>
           <p>
-            **Buyer:** {transaction.buyer}
+            <strong>Buyer:</strong> {transaction.buyer}
           </p>
         </li>
       ))}

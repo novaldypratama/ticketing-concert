@@ -2,17 +2,17 @@ const hre = require("hardhat")
 //const { ethers } = require("ethers")
 
 const tokens = (n) => {
-  return ethers.utils.parseUnits(n.toString(), 'ether')
+  return hre.ethers.utils.parseUnits(n.toString(), 'ether')
 }
 
 async function main() {
   // Setup accounts & variables
-  const [deployer] = await ethers.getSigners()
+  const [deployer] = await hre.ethers.getSigners()
   const NAME = "TokenMaster"
   const SYMBOL = "TM"
 
   // Deploy contract
-  const TokenMaster = await ethers.getContractFactory("TokenMaster")
+  const TokenMaster = await hre.ethers.getContractFactory("TokenMaster")
   const tokenMaster = await TokenMaster.deploy(NAME, SYMBOL)
   await tokenMaster.deployed()
 
@@ -23,7 +23,7 @@ async function main() {
     {
       name: "UFC Miami",
       cost: tokens(0.001),
-      tickets: 10,
+      tickets: 0,
       date: "May 31",
       time: "6:00PM EST",
       location: "Miami-Dade Arena - Miami, FL"
@@ -31,7 +31,7 @@ async function main() {
     {
       name: "ETH Tokyo",
       cost: tokens(0.001),
-      tickets: 10,
+      tickets: 125,
       date: "Jun 2",
       time: "1:00PM JST",
       location: "Tokyo, Japan"
@@ -39,7 +39,7 @@ async function main() {
     {
       name: "ETH Privacy Hackathon",
       cost: tokens(0.001),
-      tickets: 10,
+      tickets: 200,
       date: "Jun 9",
       time: "10:00AM TRT",
       location: "Turkey, Istanbul"
@@ -47,7 +47,7 @@ async function main() {
     {
       name: "Dallas Mavericks vs. San Antonio Spurs",
       cost: tokens(0.001),
-      tickets: 10,
+      tickets: 0,
       date: "Jun 11",
       time: "2:30PM CST",
       location: "American Airlines Center - Dallas, TX"
@@ -55,14 +55,14 @@ async function main() {
     {
       name: "ETH Global Toronto",
       cost: tokens(0.001),
-      tickets: 10,
+      tickets: 125,
       date: "Jun 23",
       time: "11:00AM EST",
       location: "Toronto, Canada"
     }
   ]
 
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < occasions.length; i++) {
     const transaction = await tokenMaster.connect(deployer).list(
       occasions[i].name,
       occasions[i].cost,
@@ -70,7 +70,7 @@ async function main() {
       occasions[i].date,
       occasions[i].time,
       occasions[i].location,
-    )
+    );
 
     await transaction.wait()
 

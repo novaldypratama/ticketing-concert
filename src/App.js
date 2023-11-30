@@ -24,7 +24,8 @@ function App() {
   const [occasion, setOccasion] = useState({})
   const [toggle, setToggle] = useState(false)
 
-  const [transactions, setTransactions] = useState([]);
+  //const [transactions, setTransactions] = useState([]);
+  const [buyerTransactions, setBuyerTransactions] = useState([]);
 
 //  const [events, setEvents] = useState([]);
 
@@ -40,6 +41,10 @@ const loadBlockchainData = async () => {
   );
   setTokenMaster(tokenMaster);
 
+  // Fetch buyer transactions
+  const accountTransactions = account ? await tokenMaster.getTransactionsByBuyer(account) : [];
+  setBuyerTransactions(accountTransactions);
+
   const totalOccasions = await tokenMaster.totalOccasions();
   const occasions = [];
 
@@ -48,12 +53,24 @@ const loadBlockchainData = async () => {
     occasions.push(occasion);
   }
 
-  // Fetch all transactions
-  const transactions = await tokenMaster.getTransactions();
-
   setOccasions(occasions);
-  setTransactions(transactions); // Add this line to store transactions
 
+  window.ethereum.on("accountsChanged", async (accounts) => {
+    if (accounts.length > 0) {
+      const account = ethers.utils.getAddress(accounts[0]);
+      setAccount(account);
+
+      // Fetch transactions for the connected account
+      const transactions = await tokenMaster.getTransactionsByBuyer(account);
+      setBuyerTransactions(transactions);
+    } else {
+      setAccount(null);
+      setBuyerTransactions([]);
+    }
+  });
+
+
+  // Initial account setup
   window.ethereum.on("accountsChanged", async () => {
     const accounts = await window.ethereum.request({
       method: "eth_requestAccounts",
@@ -67,6 +84,7 @@ const loadBlockchainData = async () => {
   useEffect(() => {
     loadBlockchainData()
   }, [])
+
 
 
 
@@ -105,15 +123,10 @@ const loadBlockchainData = async () => {
         />
       )}
 
-    <TransactionList transactions={transactions} />
+    <TransactionList buyerTransactions={buyerTransactions} />
 
-
-        
     </div>
 
-    
-    
-    
   );
 }
 

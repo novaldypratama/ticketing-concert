@@ -108,8 +108,24 @@ contract TokenMaster is ERC721 {
         return seatsTaken[_id];
     }
 
-    function getTransactions() public view returns (Transaction[] memory) {
-        return transactions;
+    function getTransactionsByBuyer(address buyer) public view returns (Transaction[] memory) {
+        uint256 count = 0;
+        for (uint i = 0; i < transactions.length; i++) {
+            if (transactions[i].buyer == buyer) {
+                count++;
+            }
+        }
+
+        Transaction[] memory buyerTransactions = new Transaction[](count);
+        uint256 index = 0;
+        for (uint i = 0; i < transactions.length; i++) {
+            if (transactions[i].buyer == buyer) {
+                buyerTransactions[index] = transactions[i];
+                index++;
+            }
+        }
+
+        return buyerTransactions;
     }
 
     function withdraw() public onlyOwner {

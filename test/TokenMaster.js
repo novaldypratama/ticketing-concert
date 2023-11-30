@@ -163,7 +163,7 @@ describe('Transaction', function () {
         await mintTransaction.wait();
 
         // Call getTransactions
-        const transactions = await tokenMaster.getTransactions();
+        const transactions = await tokenMaster.getTransactionsByBuyer();
 
         console.log('Transactions:', transactions);
 
