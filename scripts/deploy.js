@@ -22,16 +22,16 @@ async function main() {
   const occasions = [
     {
       name: "UFC Miami",
-      cost: tokens(3),
-      tickets: 0,
+      cost: tokens(0.001),
+      tickets: 10,
       date: "May 31",
       time: "6:00PM EST",
       location: "Miami-Dade Arena - Miami, FL"
     },
     {
       name: "ETH Tokyo",
-      cost: tokens(1),
-      tickets: 125,
+      cost: tokens(0.001),
+      tickets: 10,
       date: "Jun 2",
       time: "1:00PM JST",
       location: "Tokyo, Japan"
@@ -39,23 +39,23 @@ async function main() {
     {
       name: "ETH Privacy Hackathon",
       cost: tokens(0.001),
-      tickets: 200,
+      tickets: 10,
       date: "Jun 9",
       time: "10:00AM TRT",
       location: "Turkey, Istanbul"
     },
     {
       name: "Dallas Mavericks vs. San Antonio Spurs",
-      cost: tokens(0.05),
-      tickets: 0,
+      cost: tokens(0.001),
+      tickets: 10,
       date: "Jun 11",
       time: "2:30PM CST",
       location: "American Airlines Center - Dallas, TX"
     },
     {
       name: "ETH Global Toronto",
-      cost: tokens(1.5),
-      tickets: 125,
+      cost: tokens(0.001),
+      tickets: 10,
       date: "Jun 23",
       time: "11:00AM EST",
       location: "Toronto, Canada"

@@ -8,6 +8,19 @@ contract TokenMaster is ERC721 {
     uint256 public totalOccasions;
     uint256 public totalSupply;
 
+    // event OccasionListed(uint256 indexed occasionId, string name, uint256 cost, uint256 maxTickets, string date, string time, string location);
+    // event TicketMinted(uint256 indexed occasionId, address indexed buyer, uint256 seat);
+
+    // ... (existing code)
+
+    struct Transaction {
+        uint256 occasionId;
+        address buyer;
+        uint256 seat;
+    }
+
+    Transaction[] public transactions;
+
     struct Occasion {
         uint256 id;
         string name;
@@ -55,6 +68,8 @@ contract TokenMaster is ERC721 {
             _time,
             _location
         );
+
+        //emit OccasionListed(totalOccasions, _name, _cost, _maxTickets, _date, _time, _location);
     }
 
     function mint(uint256 _id, uint256 _seat) public payable {
@@ -75,10 +90,14 @@ contract TokenMaster is ERC721 {
         seatTaken[_id][_seat] = msg.sender; // <-- Assign seat
 
         seatsTaken[_id].push(_seat); // <-- Update seats currently taken
+        transactions.push(
+            Transaction({occasionId: _id, buyer: msg.sender, seat: _seat})
+        );
 
         totalSupply++;
 
         _safeMint(msg.sender, totalSupply);
+        //emit TicketMinted(_id, msg.sender, _seat);
     }
 
     function getOccasion(uint256 _id) public view returns (Occasion memory) {
@@ -89,30 +108,12 @@ contract TokenMaster is ERC721 {
         return seatsTaken[_id];
     }
 
+    function getTransactions() public view returns (Transaction[] memory) {
+        return transactions;
+    }
+
     function withdraw() public onlyOwner {
         (bool success, ) = owner.call{value: address(this).balance}("");
         require(success);
     }
-
-    function getPurchasedTickets(address _userAddress) public view returns (Occasion[] memory) {
-        uint256 purchasedTicketCount = 0;
-
-        for (uint256 i = 1; i <= totalOccasions; i++) {
-        if (hasBought[i][_userAddress]) {
-            purchasedTicketCount++;
-        }
-        }
-
-        Occasion[] memory purchasedTickets = new Occasion[](purchasedTicketCount);
-        uint256 currentIndex = 0;
-
-        for (uint256 i = 1; i <= totalOccasions; i++) {
-        if (hasBought[i][_userAddress]) {
-            purchasedTickets[currentIndex] = occasions[i];
-            currentIndex++;
-        }
-        }
-
-        return purchasedTickets;
-  }
 }

@@ -6,6 +6,7 @@ import Navigation from './components/Navigation'
 import Sort from './components/Sort'
 import Card from './components/Card'
 import SeatChart from './components/SeatChart'
+import TransactionList from './components/TransactionList'
 
 // ABIs
 import TokenMaster from './abis/TokenMaster.json'
@@ -23,41 +24,58 @@ function App() {
   const [occasion, setOccasion] = useState({})
   const [toggle, setToggle] = useState(false)
 
-  const loadBlockchainData = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    setProvider(provider)
+  const [transactions, setTransactions] = useState([]);
 
-    const network = await provider.getNetwork()
-    const tokenMaster = new ethers.Contract(config[network.chainId].TokenMaster.address, TokenMaster, provider)
-    setTokenMaster(tokenMaster)
+//  const [events, setEvents] = useState([]);
 
-    const totalOccasions = await tokenMaster.totalOccasions()
-    const occasions = []
+const loadBlockchainData = async () => {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  setProvider(provider);
 
-    for (var i = 1; i <= totalOccasions; i++) {
-      const occasion = await tokenMaster.getOccasion(i)
-      occasions.push(occasion)
-    }
+  const network = await provider.getNetwork();
+  const tokenMaster = new ethers.Contract(
+    config[network.chainId].TokenMaster.address,
+    TokenMaster,
+    provider
+  );
+  setTokenMaster(tokenMaster);
 
-    setOccasions(occasions)
+  const totalOccasions = await tokenMaster.totalOccasions();
+  const occasions = [];
 
-    window.ethereum.on('accountsChanged', async () => {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-      const account = ethers.utils.getAddress(accounts[0])
-      setAccount(account)
-    })
+  for (var i = 1; i <= totalOccasions; i++) {
+    const occasion = await tokenMaster.getOccasion(i);
+    occasions.push(occasion);
   }
+
+  // Fetch all transactions
+  const transactions = await tokenMaster.getTransactions();
+
+  setOccasions(occasions);
+  setTransactions(transactions); // Add this line to store transactions
+
+  window.ethereum.on("accountsChanged", async () => {
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    const account = ethers.utils.getAddress(accounts[0]);
+    setAccount(account);
+  });
+};
+
 
   useEffect(() => {
     loadBlockchainData()
   }, [])
+
+
 
   return (
     <div>
       <header>
         <Navigation account={account} setAccount={setAccount} />
 
-        <h2 className="header__title"><strong>Event</strong> Tickets</h2>
+        <h2 className="header__title"><strong>Concert</strong> Tickets</h2>
       </header>
 
       <Sort />
@@ -86,7 +104,16 @@ function App() {
           setToggle={setToggle}
         />
       )}
+
+    <TransactionList transactions={transactions} />
+
+
+        
     </div>
+
+    
+    
+    
   );
 }
 

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poiret+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poiret+One&display=swap");
 
 * {
   margin: 0;
@@ -7,13 +7,13 @@
 }
 
 :root {
-  --clr-white: #FFFFFF;
+  --clr-white: #ffffff;
   --clr-black: #000000;
   --clr-grey: #2b2727;
   --clr-grey-2: #2b2727;
 
-  --clr-dark-blue: #0237AB;
-  --clr-light-blue: #125AC6;
+  --clr-dark-blue: #0237ab;
+  --clr-light-blue: #125ac6;
 }
 
 body {
@@ -21,6 +21,7 @@ body {
   font-family: "Open Sans";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: lightgrey;
 }
 
 /* ------------------------------------------------------ */
@@ -46,9 +47,9 @@ nav {
 .nav__brand h1 {
   color: var(--clr-white);
 
-  font-family: "Poiret One";
-  font-size: 1.50em;
-  font-style: italic;
+  font-family: "ArcadeClassic";
+  font-size: 1.5em;
+  //font-style: italic;
   margin-right: 10px;
 }
 
@@ -112,15 +113,16 @@ nav {
   height: 50px;
   margin: 0 75px 0 auto;
 
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.4);
   color: var(--clr-white);
 
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
 
   font-family: "Open Sans";
-  font-size: 1.10em;
-  font-weight: 600;
+  font-size: 1.1em;
+  font-weight: 1000;
+  text-shadow: 3px 4px 5px rgba(0, 0, 0, 0.8);
 
   cursor: pointer;
   transition: all 250ms ease;
@@ -134,8 +136,8 @@ nav {
 /* -- HEADER -- */
 
 header {
-  background-image: linear-gradient(45deg, var(--clr-dark-blue) 10%, var(--clr-light-blue) 20%, var(--clr-dark-blue) 50%, var(--clr-light-blue) 120%);
-  background-size: contain;
+  background-image: url("./assets/concert.webp");
+  background-size: cover;
   background-position: right;
   background-repeat: no-repeat;
   background-color: var(--clr-grey);
@@ -152,9 +154,10 @@ header {
   left: 10%;
   max-width: 450px;
 
-  font-family: "Open Sans";
+  font-family: "ArcadeClassic";
   font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 300;
+  text-shadow: 2px 2px #ff0000;
 }
 
 /* ------------------------------------------------------ */
@@ -171,7 +174,7 @@ header {
   height: 40px;
 
   margin: 25px 5px;
-  border: 1px solid var(--clr-black);
+  border: 3px solid var(--clr-black);
 
   display: flex;
   justify-content: space-between;
@@ -182,7 +185,7 @@ header {
 
 .sort__select p {
   margin-left: 10px;
-  font-size: clamp(0.80rem, 2vw, 1rem);
+  font-size: clamp(0.8rem, 2vw, 1rem);
 }
 
 .sort__select img {
@@ -229,9 +232,8 @@ header {
   background: rgba(18, 90, 198, 0.2);
 }
 
-
 .card__info p small {
-  font-size: clamp(0.80rem, 2vw, 0.90rem);
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
 }
 
 .card__info p small span {
@@ -254,7 +256,7 @@ header {
   align-self: end;
 
   font-family: "Open Sans";
-  font-size: clamp(0.90rem, 3vw, 1.10rem);
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
   font-weight: 600;
 
   text-align: center;
@@ -277,13 +279,13 @@ header {
   grid-row: 1 / span 2;
   place-self: center;
 
-  font-size: clamp(1rem, 3vw, 1.10rem);
+  font-size: clamp(1rem, 3vw, 1.1rem);
   font-weight: 300;
 }
 
 .card__cost strong {
   font-family: "Open Sans";
-  font-size: clamp(1.10rem, 3vw, 1.50rem);
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
   font-weight: 700;
   margin: 0;
 }
@@ -321,7 +323,7 @@ header {
 }
 
 .card__button--out {
-  background-color: #BA1840;
+  background-color: #ba1840;
 }
 
 .card hr {
@@ -347,15 +349,15 @@ header {
   gap: 5px;
   grid-template-columns: repeat(25, 1fr);
 
-  background: linear-gradient(to bottom, var(--clr-light-blue), var(--clr-white) 75%);
-  border: 10px solid var(--clr-grey);
-  border-radius: 8px;
+  background: var(--clr-white);
+  border-radius: 3%;
 
   width: 90%;
   max-width: 1200px;
   height: 85%;
   margin: 0 auto;
   padding: 20px;
+  text-shadow: 3px 2px 2px rgba(0, 0, 0, 0.4);
 
   position: fixed;
   top: 50%;
@@ -366,11 +368,14 @@ header {
 }
 
 .occasion__seating h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   grid-column: 1 / span 27;
   grid-row: 1;
 
-  color: var(--clr-white);
-  font-weight: 300;
+  color: var(--clr-black);
+  font-weight: 800;
 }
 
 .occasion__close {
@@ -406,7 +411,7 @@ header {
   justify-content: center;
   align-items: center;
 
-  background-color: var(--clr-grey);
+  background-color: lightgrey;
   color: var(--clr-white);
 }
 
@@ -416,7 +421,7 @@ header {
 
   height: 150px;
 
-  border: 3px solid black;
+  border: 1px gray;
   border-radius: 0 0 24px 24px;
 }
 
@@ -424,7 +429,7 @@ header {
 .occasion__spacer--2 {
   min-width: 30px;
   margin: 0 5px;
-  border: 1px solid black;
+  border: 1px gray;
   writing-mode: vertical-lr;
 }
 
@@ -444,13 +449,13 @@ header {
   justify-content: center;
   align-items: center;
 
-  background-color: var(--clr-dark-blue);
+  background-color: #81de76;
   color: var(--clr-white);
-
+  font-weight: bold;
   width: 35px;
   height: 35px;
-  border: 1px solid black;
-  border-radius: 50%;
+  border: 0.3px solid black;
+  border-radius: 15%;
 
   font-size: 0.9em;
 
@@ -460,11 +465,12 @@ header {
 }
 
 .occasion__seats:hover {
-  background: var(--clr-white);
-  color: var(--clr-black);
+  background: #35a630;
+  color: var(--clr-white);
+  transform: scale(1.2);
 
-  font-size: 1em;
-  font-weight: 700;
+  font-size: 1.15em;
+  font-weight: 800;
 }
 
 .occasion__seats--taken {
