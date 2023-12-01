@@ -9,8 +9,9 @@ import SeatChart from './components/SeatChart'
 import TransactionList from './components/TransactionList'
 
 // ABIs
-import TokenMaster from './abis/TokenMaster.json'
+//import ticketConcert from './abis/ticketConcert.json'
 
+import ConcertTicket from './abis/ConcertTicket.json'
 // Config
 import config from './config.json'
 
@@ -18,7 +19,7 @@ function App() {
   const [provider, setProvider] = useState(null)
   const [account, setAccount] = useState(null)
 
-  const [tokenMaster, setTokenMaster] = useState(null)
+  const [ticketConcert, setticketConcert] = useState(null)
   const [occasions, setOccasions] = useState([])
 
   const [occasion, setOccasion] = useState({})
@@ -27,7 +28,7 @@ function App() {
   const [transactions, setTransactions] = useState([]);
   const [buyerTransactions, setBuyerTransactions] = useState([]);
 
-//  const [events, setEvents] = useState([]);
+//  const [occasions, setOccasions] = useState([]);
 
  useEffect(() => {
     const loadBlockchainData = async () => {
@@ -35,24 +36,24 @@ function App() {
       setProvider(provider);
 
       const network = await provider.getNetwork();
-      const tokenMaster = new ethers.Contract(
-        config[network.chainId].TokenMaster.address,
-        TokenMaster,
+      const ticketConcert = new ethers.Contract(
+        config[network.chainId].ConcertTicket.address,
+        ConcertTicket,
         provider
       );
 
-      setTokenMaster(tokenMaster);
+      setticketConcert(ticketConcert);
 
-      const totalOccasions = await tokenMaster.totalOccasions();
+      const totalOccasions = await ticketConcert.totalOccasions();
       const occasions = [];
 
       for (var i = 1; i <= totalOccasions; i++) {
-        const occasion = await tokenMaster.getOccasion(i);
+        const occasion = await ticketConcert.getOccasion(i);
         occasions.push(occasion);
       }
 
-      const transactions = await tokenMaster.getTransactions();
-      const accountTransactions = account ? await tokenMaster.getBuyerTransactions(account) : [];
+      const transactions = await ticketConcert.getTransactions();
+      const accountTransactions = account ? await ticketConcert.getBuyerTransactions(account) : [];
 
       setBuyerTransactions(accountTransactions);
       setOccasions(occasions);
@@ -63,7 +64,7 @@ function App() {
           const account = ethers.utils.getAddress(accounts[0]);
           setAccount(account);
 
-          const transactions = await tokenMaster.getBuyerTransactions(account);
+          const transactions = await ticketConcert.getBuyerTransactions(account);
           setBuyerTransactions(transactions);
         } else {
           setAccount(null);
@@ -71,17 +72,17 @@ function App() {
         }
       });
 
-      // Subscribe to the NewTransaction event
-      tokenMaster.on('NewTransaction', async (occasionId, buyer, seat) => {
+      // Subscribe to the NewTransaction occasion
+      ticketConcert.on('NewTransaction', async (occasionId, buyer, seat) => {
         if (ethers.utils.getAddress(buyer) === account) {
-          const updatedBuyerTransactions = await tokenMaster.getBuyerTransactions(account);
+          const updatedBuyerTransactions = await ticketConcert.getBuyerTransactions(account);
           setBuyerTransactions(updatedBuyerTransactions);
         }
       });
     };
 
     loadBlockchainData();
-  }, [account, tokenMaster]);
+  }, [account, ticketConcert]);
 
 
 
@@ -100,7 +101,7 @@ function App() {
           <Card
             occasion={occasion}
             id={index + 1}
-            tokenMaster={tokenMaster}
+            ticketConcert={ticketConcert}
             provider={provider}
             account={account}
             toggle={toggle}
@@ -114,14 +115,13 @@ function App() {
       {toggle && (
         <SeatChart
           occasion={occasion}
-          tokenMaster={tokenMaster}
+          ticketConcert={ticketConcert}
           provider={provider}
           setToggle={setToggle}
         />
       )}
 
       <div className='buyer_ticket_container'>
-        <h3> Your Ticket</h3>
         <TransactionList transactions={transactions} buyerTransactions={buyerTransactions} />  
       </div>
            

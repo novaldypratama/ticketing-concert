@@ -477,6 +477,54 @@ header {
   background-color: rgba(34, 64, 109, 0.7);
 }
 
+// Ticket
+
+.buyer_ticket_container {
+  margin-top: 5rem;
+  align-items: center;
+}
+
+.buyer_ticket_container h3 {
+  text-align: center;
+}
+
+.transaction {
+}
+
+.transaction-list {
+  //align-items: center;
+  //justify-content:center;
+
+  width: 95%;
+  max-width: 850px;
+  height: 75px;
+
+  margin: 25px auto;
+}
+
+.ticket-list {
+  border: black solid 3px;
+  list-style: none;
+  padding: 5 rem;
+}
+
+.ticket-list h3 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ticket {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 5px;
+
+  background-color: #f9f9f9;
+}
+
+.ticket p {
+  margin: 5px 0;
+}
+
 /* ------------------------------------------------------ */
 /* -- MEDIA QUERIES -- */
 
