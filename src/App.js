@@ -25,48 +25,63 @@ function App() {
   const [toggle, setToggle] = useState(false)
 
   const [transactions, setTransactions] = useState([]);
+  const [buyerTransactions, setBuyerTransactions] = useState([]);
 
 //  const [events, setEvents] = useState([]);
 
-const loadBlockchainData = async () => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  setProvider(provider);
+ useEffect(() => {
+    const loadBlockchainData = async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      setProvider(provider);
 
-  const network = await provider.getNetwork();
-  const tokenMaster = new ethers.Contract(
-    config[network.chainId].TokenMaster.address,
-    TokenMaster,
-    provider
-  );
-  setTokenMaster(tokenMaster);
+      const network = await provider.getNetwork();
+      const tokenMaster = new ethers.Contract(
+        config[network.chainId].TokenMaster.address,
+        TokenMaster,
+        provider
+      );
 
-  const totalOccasions = await tokenMaster.totalOccasions();
-  const occasions = [];
+      setTokenMaster(tokenMaster);
 
-  for (var i = 1; i <= totalOccasions; i++) {
-    const occasion = await tokenMaster.getOccasion(i);
-    occasions.push(occasion);
-  }
+      const totalOccasions = await tokenMaster.totalOccasions();
+      const occasions = [];
 
-  // Fetch all transactions
-  const transactions = await tokenMaster.getTransactions();
+      for (var i = 1; i <= totalOccasions; i++) {
+        const occasion = await tokenMaster.getOccasion(i);
+        occasions.push(occasion);
+      }
 
-  setOccasions(occasions);
-  setTransactions(transactions); // Add this line to store transactions
+      const transactions = await tokenMaster.getTransactions();
+      const accountTransactions = account ? await tokenMaster.getBuyerTransactions(account) : [];
 
-  window.ethereum.on("accountsChanged", async () => {
-    const accounts = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
-    const account = ethers.utils.getAddress(accounts[0]);
-    setAccount(account);
-  });
-};
+      setBuyerTransactions(accountTransactions);
+      setOccasions(occasions);
+      setTransactions(transactions);
 
+      window.ethereum.on("accountsChanged", async (accounts) => {
+        if (accounts.length > 0) {
+          const account = ethers.utils.getAddress(accounts[0]);
+          setAccount(account);
 
-  useEffect(() => {
-    loadBlockchainData()
-  }, [])
+          const transactions = await tokenMaster.getBuyerTransactions(account);
+          setBuyerTransactions(transactions);
+        } else {
+          setAccount(null);
+          setBuyerTransactions([]);
+        }
+      });
+
+      // Subscribe to the NewTransaction event
+      tokenMaster.on('NewTransaction', async (occasionId, buyer, seat) => {
+        if (ethers.utils.getAddress(buyer) === account) {
+          const updatedBuyerTransactions = await tokenMaster.getBuyerTransactions(account);
+          setBuyerTransactions(updatedBuyerTransactions);
+        }
+      });
+    };
+
+    loadBlockchainData();
+  }, [account, tokenMaster]);
 
 
 
@@ -105,10 +120,11 @@ const loadBlockchainData = async () => {
         />
       )}
 
-    <TransactionList transactions={transactions} />
-
-
-        
+      <div className='buyer_ticket_container'>
+        <h3> Your Ticket</h3>
+        <TransactionList transactions={transactions} buyerTransactions={buyerTransactions} />  
+      </div>
+           
     </div>
 
     

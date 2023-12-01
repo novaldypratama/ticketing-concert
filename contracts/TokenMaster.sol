@@ -32,6 +32,8 @@ contract TokenMaster is ERC721 {
         string location;
     }
 
+    event NewTransaction(uint256 indexed occasionId, address indexed buyer, uint256 seat);
+
     mapping(uint256 => Occasion) occasions;
     mapping(uint256 => mapping(address => bool)) public hasBought;
     mapping(uint256 => mapping(uint256 => address)) public seatTaken;
@@ -93,7 +95,7 @@ contract TokenMaster is ERC721 {
         transactions.push(
             Transaction({occasionId: _id, buyer: msg.sender, seat: _seat})
         );
-
+        emit NewTransaction(_id, msg.sender, _seat);
         totalSupply++;
 
         _safeMint(msg.sender, totalSupply);
@@ -110,7 +112,27 @@ contract TokenMaster is ERC721 {
 
     function getTransactions() public view returns (Transaction[] memory) {
         return transactions;
+}
+
+    function getBuyerTransactions(address buyer) public view returns (Transaction[] memory) {
+    uint256 count = 0;
+    for (uint i = 0; i < transactions.length; i++) {
+        if (transactions[i].buyer == buyer) {
+            count++;
+        }
     }
+
+    Transaction[] memory buyerTransactions = new Transaction[](count);
+    uint256 index = 0;
+    for (uint i = 0; i < transactions.length; i++) {
+        if (transactions[i].buyer == buyer) {
+            buyerTransactions[index] = transactions[i];
+            index++;
+        }
+    }
+
+    return buyerTransactions;
+}
 
     function withdraw() public onlyOwner {
         (bool success, ) = owner.call{value: address(this).balance}("");

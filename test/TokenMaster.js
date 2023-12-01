@@ -177,6 +177,34 @@ describe('Transaction', function () {
         expect(transactions[0].buyer).to.equal(buyer.address);
         expect(transactions[0].seat).to.equal(SEAT);
     });
+
+    it('should return buyer transactions', async () => {
+    const ID = 2;
+    const SEAT = 2;
+    const AMOUNT = ethers.utils.parseUnits('1', 'ether');
+
+    // Perform minting transaction
+    const mintTransaction = await tokenMaster.connect(buyer).mint(ID, SEAT, { value: AMOUNT });
+    await mintTransaction.wait();
+
+    // Call getBuyerTransactions
+    const buyerTransactions = await tokenMaster.getBuyerTransactions(buyer.address);
+
+    console.log('Buyer Transactions:', buyerTransactions);
+
+    expect(buyerTransactions).to.be.an('array');
+    expect(buyerTransactions.length).to.equal(1); // Assuming one transaction was performed
+
+    // Add more expectations based on your contract logic and expected data
+
+    // For example, you can check the properties of the returned buyer transactions
+    expect(buyerTransactions[0].occasionId).to.equal(ID);
+    expect(buyerTransactions[0].buyer).to.equal(buyer.address);
+    expect(buyerTransactions[0].seat).to.equal(SEAT);
+});
+
+
+    
 });
 
 // ...
